@@ -4,7 +4,7 @@ Cliente: **Diego**, maestro de inglés (cliente de Asesor Sebas desde nov 2026).
 Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago), que solo entren los que están al corriente y que su metodología no circule fuera de la plataforma.
 
 ## Estado (25 nov 2026): cascarón / primera versión
-- Hecho desde cero (sin Lovable). Landing, entrar con código, área de alumnos `/clases`, panel `/admin`, Mercado Pago listo para conectar. 10 pruebas pasan.
+- Hecho desde cero (sin Lovable). Landing, entrar con código, área de alumnos `/clases`, panel `/admin`, Mercado Pago listo para conectar, videos en Cloudflare Stream. 12 pruebas pasan.
 - **Falta de Diego** (ya se le pidió): precios Normal y VIP, qué incluye cada una, lista y orden de los 36–40 videos (y su duración), ejemplos de sus documentos, si habrá clases en vivo, su correo (admin) y WhatsApp, dominio, fotos (solo hay 1: `public/s/img/diego-*.webp`), nombre completo y domicilio para el aviso de privacidad.
 - Textos de la landing ("Hi! I'm Diego", preguntas, beneficios VIP) son de borrador: Diego los revisa. VIP tiene puntos marcados "por definir".
 
@@ -20,7 +20,8 @@ Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago)
 ## Protección del material
 - Las lecciones no existen como PDF: se escriben en el panel con un formato sencillo (`public/s/formato.js`, la chuleta está en el editor) y se guardan en D1. Al alumno nunca le llegan las respuestas correctas: califica el Worker.
 - Marca de agua en mosaico con el correo del alumno y la fecha sobre la lección; sobre el video, su correo se mueve cada 9 s. Sin seleccionar texto, sin menú contextual, al imprimir sale en blanco. Las capturas de pantalla no se pueden evitar: la marca sirve para saber de qué cuenta salió.
-- Videos en **Vimeo** (decisión de Sebas, 25 nov 2026: más barato que Cloudflare Stream a este tamaño; Diego paga su plan anual). Cada video en "Solo para incrustar" + dominio de la plataforma. El id de Vimeo solo se manda a quien tiene permiso (`/api/video/:id`). Si hubiera filtraciones, se puede pasar a Cloudflare Stream con URLs firmadas sin rehacer la plataforma.
+- Videos en **Cloudflare Stream** (decisión de Sebas, 25 nov 2026: Vimeo Core con candado de dominio cuesta $900/mes o ~$7,650 de golpe al año; Stream se paga por uso, ~$430–590/mes con 30 alumnos, y lo cobra la cuenta de Sebas, que se lo incluye a Diego en su mensualidad). `worker/stream.js`: Diego sube desde el panel (subida por partes, protocolo tus, del navegador directo a Stream; el Worker solo crea la subida con `requiresignedurls` y máx. 4 h); el panel revisa cada 20 s hasta que Stream termina de procesar (`stream_listo`, minutos automáticos); al alumno solo le llega un iframe con **permiso firmado (JWT RS256) que caduca en 4 h**. La llave de firma se crea sola la primera vez (`meta.stream_llave`). Borrar o reemplazar un video lo borra de Stream (para no pagar almacenamiento). Vimeo sigue soportado como respaldo (pegar liga).
+- Config Stream: var `CF_ACCOUNT_ID` (cuenta de Sebas, en `wrangler.jsonc`) + Secret `CF_STREAM_TOKEN` (token de API con permiso **Stream: Edit**). Stream debe estar contratado en la cuenta (mínimo USD 5/mes por 1,000 min guardados; USD 1 por cada 1,000 min vistos).
 
 ## Mercado Pago (worker/mp.js) — falta probar con cuentas de prueba
 - API de Suscripciones sin plan: `POST /preapproval` por alumno con `external_reference = alumno:<id>:<plan>`, `payer_email`, mensual en MXN, `back_url = /clases?pago=listo`, `status: pending` → se manda al alumno al `init_point`.
@@ -31,11 +32,11 @@ Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago)
 - Secrets: `MP_ACCESS_TOKEN` (producción, de la cuenta de Diego), `MP_WEBHOOK_SECRET`. Sin token, el botón de pagar manda a WhatsApp.
 
 ## Arquitectura (sin compilación, sin npm)
-- `worker/index.js` (rutas) · `db.js` (tablas que se crean solas + acceso) · `auth.js` (código por correo, sesiones) · `contenido.js` (catálogo, video, lección) · `admin.js` (panel) · `mp.js` (Mercado Pago) · `util.js`.
+- `worker/index.js` (rutas) · `db.js` (tablas que se crean solas + acceso) · `auth.js` (código por correo, sesiones) · `contenido.js` (catálogo, video, lección) · `admin.js` (panel) · `mp.js` (Mercado Pago) · `stream.js` (videos) · `util.js`.
 - `public/`: `index.html` (landing), `entrar.html`, `clases.html` + `s/clases.js`, `admin.html` + `s/admin.js`, `s/hoja.js` (pinta lecciones), `s/formato.js` (lo usan Worker y panel), `s/estilos.css`, `s/app.css`, fuentes Lora + Poppins servidas desde `s/fuentes/`.
 - D1 `teacherdiego` (ID 42ea061f-a4fb-4c5a-9ed2-57b25c7bee7a, binding `DB`): `alumnos`, `codigos`, `sesiones`, `modulos`, `videos`, `lecciones`, `respuestas`, `pagos`, `mp_avisos`, `meta`. **Se crean solas** al primer `/api/*` (con un módulo y una lección de ejemplo). Columnas nuevas: agregar a `MIGRACIONES` en `db.js`.
 - Precios, WhatsApp, admins y remitente en `vars` de `wrangler.jsonc` (la landing los lee de `/api/publico`). Secrets: `RESEND_API_KEY` (remitente `teacherdiego@asesorsebas.com`), `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`.
-- Dominio temporal: `teacherdiego.asesorsebas.com` (custom domain en `routes`). Al tener el dominio de Diego: comprarlo en Cloudflare a su nombre, cambiar `routes`, `DOMINIO`, `REDIRIGIR` (el subdominio viejo), las URLs absolutas `og:`/canonical/robots/sitemap, y agregar el dominio en Vimeo.
+- Dominio temporal: `teacherdiego.asesorsebas.com` (custom domain en `routes`). Al tener el dominio de Diego: comprarlo en Cloudflare a su nombre, cambiar `routes`, `DOMINIO`, `REDIRIGIR` (el subdominio viejo), las URLs absolutas `og:`/canonical/robots/sitemap, y (si hubiera videos en Vimeo) agregar el dominio allá.
 
 ## Marca
 - Colores: marino `#13233F`, azul real `#2148A0` (como su saco), rojo `#C8102E`, perla `#F6F2EA`. Lora (títulos) + Poppins (texto). Logo provisional: portada de manual con "TD" y cinta roja de separador (`public/logo.svg`, `diseno/icono.html`); Edder puede hacer la versión final.

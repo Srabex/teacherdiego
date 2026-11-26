@@ -1,9 +1,10 @@
-// Lo que ve el alumno: catálogo por módulos, videos (Vimeo) y lecciones con ejercicios.
+// Lo que ve el alumno: catálogo por módulos, videos (Cloudflare Stream o Vimeo) y lecciones con ejercicios.
 // Solo se manda el id del video o el texto de la lección si tiene acceso y su plan lo incluye.
 import { json, Publico, leerJson, iso } from "./util.js";
 import { puedeVer } from "./db.js";
 import { publicoYo } from "./auth.js";
 import { precioDe } from "./mp.js";
+import { reproductor } from "./stream.js";
 import { parsear, sinRespuestas, calificar, limpiarDatos } from "../public/s/formato.js";
 
 const permiso = (r, planMin) => r.acceso.ok && puedeVer(r.plan, planMin);
@@ -24,7 +25,7 @@ export async function rutasAlumno(request, env, url, r) {
   if (pathname === "/api/catalogo" && m === "GET") {
     const [mods, vids, lecs, resp] = await Promise.all([
       env.DB.prepare("SELECT id, titulo, descripcion, nivel, plan_min FROM modulos WHERE publicado = 1 ORDER BY orden, id").all(),
-      env.DB.prepare("SELECT id, modulo_id, titulo, descripcion, minutos, plan_min FROM videos WHERE publicado = 1 ORDER BY orden, id").all(),
+      env.DB.prepare("SELECT id, modulo_id, titulo, descripcion, minutos, plan_min FROM videos WHERE publicado = 1 AND (stream_uid IS NULL OR stream_listo = 1) ORDER BY orden, id").all(),
       env.DB.prepare("SELECT id, modulo_id, titulo, plan_min FROM lecciones WHERE publicado = 1 ORDER BY orden, id").all(),
       env.DB.prepare("SELECT leccion_id, aciertos, total FROM respuestas WHERE alumno_id = ?").bind(r.a.id).all(),
     ]);
@@ -48,6 +49,10 @@ export async function rutasAlumno(request, env, url, r) {
     const v = await env.DB.prepare("SELECT v.*, mo.plan_min AS plan_mod FROM videos v JOIN modulos mo ON mo.id = v.modulo_id WHERE v.id = ? AND v.publicado = 1").bind(mm[1]).first();
     if (!v) throw new Publico("Ese video no existe.", 404);
     if (!permiso(r, maxPlan(v.plan_mod, v.plan_min))) throw new Publico(r.acceso.ok ? "Este video es parte de la membresía VIP." : "Activa tu membresía para ver este video.", 403, r.acceso.ok ? "solo_vip" : "sin_acceso");
+    if (v.stream_uid) {
+      if (!v.stream_listo) throw new Publico("Este video todavía se está procesando. Intenta en unos minutos.", 409);
+      return json({ id: v.id, titulo: v.titulo, descripcion: v.descripcion, src: await reproductor(env, v.stream_uid) });
+    }
     return json({ id: v.id, titulo: v.titulo, descripcion: v.descripcion, vimeo_id: v.vimeo_id, vimeo_h: v.vimeo_h || "" });
   }
 

@@ -34,8 +34,11 @@
     "PRECIO_NORMAL": "",
     "PRECIO_VIP": "",
     // Días que sigue entrando después de que vence su mes si el cobro falló.
-    "GRACIA_DIAS": "3"
+    "GRACIA_DIAS": "3",
+    // Cuenta de Cloudflare de Sebas (videos en Cloudflare Stream).
+    "CF_ACCOUNT_ID": "a09ffdd2bda672d4af69975e08ddaaca"
   },
-  // Secrets (Settings → Variables and Secrets, tipo Secret): RESEND_API_KEY, MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET
+  // Secrets (Settings → Variables and Secrets, tipo Secret): RESEND_API_KEY, CF_STREAM_TOKEN (token de API con Stream: Edit),
+  // MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET
   "observability": { "enabled": true, "head_sampling_rate": 1 }
 }

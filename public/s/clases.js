@@ -137,11 +137,12 @@ async function ruta() {
 
 async function verVideo(cont, id) {
   const v = await api(`/api/video/${id}`);
-  const src = `https://player.vimeo.com/video/${encodeURIComponent(v.vimeo_id)}?${v.vimeo_h ? `h=${encodeURIComponent(v.vimeo_h)}&` : ""}dnt=1&title=0&byline=0&portrait=0&badge=0`;
+  // Stream: el Worker manda la URL con permiso firmado. Vimeo (respaldo): id + hash.
+  const src = v.src || `https://player.vimeo.com/video/${encodeURIComponent(v.vimeo_id)}?${v.vimeo_h ? `h=${encodeURIComponent(v.vimeo_h)}&` : ""}dnt=1&title=0&byline=0&portrait=0&badge=0`;
   cont.innerHTML = `
     <h1 style="margin-top:18px;font-size:1.8rem">${esc(v.titulo)}</h1>
     <div class="reproductor protegido" oncontextmenu="return false">
-      <iframe src="${src}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="${esc(v.titulo)}"></iframe>
+      <iframe src="${src}" allow="accelerometer; gyroscope; autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="${esc(v.titulo)}"></iframe>
       <div class="marca-video" aria-hidden="true">${esc(yo.correo)}</div>
     </div>
     ${v.descripcion ? `<p>${esc(v.descripcion)}</p>` : ""}`;

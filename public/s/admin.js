@@ -142,9 +142,12 @@ async function fichaAlumno(id) {
 
 // ---------- Contenido ----------
 let modulos = [];
+let streamActivo = false;
+let revisando = null;
 
 async function cargarContenido() {
-  modulos = (await api("/api/admin/contenido")).modulos;
+  const r = await api("/api/admin/contenido");
+  modulos = r.modulos; streamActivo = r.stream_listo;
   $("#lista-modulos").innerHTML = modulos.length ? modulos.map((m, i) => `
     <section class="mod-admin">
       <header>
@@ -156,9 +159,27 @@ async function cargarContenido() {
           <button class="btn btn-rojo btn-chico" data-nueva-leccion="${m.id}">+ Lección</button>
         </div>
       </header>
-      ${m.videos.map((v) => `<div class="fila" data-video="${v.id}"><span>▶</span><div><div class="nom">${esc(v.titulo)}</div><div class="sub">Vimeo ${esc(v.vimeo_id)}${v.minutos ? ` · ${v.minutos} min` : ""}</div></div><div>${v.plan_min === "vip" ? pillPlan("vip") : ""} ${v.publicado ? "" : `<span class="pill gris">Oculto</span>`}</div></div>`).join("")}
+      ${m.videos.map((v) => `<div class="fila" data-video="${v.id}"><span>▶</span><div><div class="nom">${esc(v.titulo)}</div><div class="sub">${v.stream_uid ? "Video subido" : `Vimeo ${esc(v.vimeo_id)}`}${v.minutos ? ` · ${v.minutos} min` : ""}</div></div><div>${v.stream_uid && !v.stream_listo ? `<span class="pill gracia" data-procesando="${v.id}">Procesando…</span>` : ""} ${v.plan_min === "vip" ? pillPlan("vip") : ""} ${v.publicado ? "" : `<span class="pill gris">Oculto</span>`}</div></div>`).join("")}
       ${m.lecciones.map((l) => `<div class="fila" data-leccion="${l.id}"><span>✍</span><div><div class="nom">${esc(l.titulo)}</div><div class="sub">Lección · ${fechaCorta(l.actualizado)}</div></div><div>${l.plan_min === "vip" ? pillPlan("vip") : ""} ${l.publicado ? "" : `<span class="pill gris">Oculta</span>`}</div></div>`).join("")}
     </section>`).join("") : `<div class="vacio">Crea tu primer módulo.</div>`;
+  revisarProcesando();
+}
+
+/** Stream tarda unos minutos en procesar cada video: se revisa solo cada 20 s mientras el panel esté abierto. */
+function revisarProcesando() {
+  clearTimeout(revisando);
+  const pend = $$("[data-procesando]");
+  if (!pend.length) return;
+  revisando = setTimeout(async () => {
+    let cambio = false;
+    for (const el of pend) {
+      const e = await api(`/api/admin/videos/${el.dataset.procesando}/estado`, { metodo: "POST" }).catch(() => null);
+      if (e?.listo) cambio = true;
+      else if (e?.error) el.textContent = `Error: ${e.error}`;
+      else if (e?.avance) el.textContent = `Procesando… ${Math.round(e.avance)}%`;
+    }
+    if (cambio) { aviso("Video listo para tus alumnos ✓"); cargarContenido(); } else revisarProcesando();
+  }, 20000);
 }
 
 const opcionesModulo = (sel) => modulos.map((m) => `<option value="${m.id}" ${String(m.id) === String(sel) ? "selected" : ""}>${esc(m.titulo)}</option>`).join("");
@@ -186,26 +207,78 @@ function formModulo(m = {}) {
 }
 
 function formVideo(v = {}) {
+  const conVimeo = !!v.vimeo_id && !v.stream_uid;
   dlg(v.id ? "Editar video" : "Nuevo video", `<form id="f-video">
-    <label>Liga del video en Vimeo</label><input name="liga" required value="${v.vimeo_id ? `https://vimeo.com/${v.vimeo_id}${v.vimeo_h ? `/${v.vimeo_h}` : ""}` : ""}" placeholder="https://vimeo.com/123456789/abc123">
-    <p class="ayuda">En Vimeo: Compartir → copia la liga. El video debe estar en "Solo para incrustar" con el dominio de la plataforma.</p>
-    <label>Título</label><input name="titulo" value="${esc(v.titulo || "")}" required>
+    <label>Título</label><input name="titulo" value="${esc(v.titulo || "")}" required placeholder="Clase 3 · Present simple">
+    ${streamActivo || !conVimeo ? `
+      <label>${v.stream_uid ? "Reemplazar archivo (opcional)" : "Archivo del video"}</label>
+      <input type="file" name="archivo" accept="video/*" ${v.id ? "" : "required"}>
+      <p class="ayuda">MP4 o MOV, idealmente en 1080p. Puedes subirlo desde el celular; no cierres esta ventana hasta que termine.</p>
+      <div id="progreso" hidden><div style="height:10px;background:var(--perla2);border-radius:99px;overflow:hidden"><div id="barra" style="height:100%;width:0;background:var(--rojo);transition:width .3s"></div></div><p class="ayuda" id="progreso-txt"></p></div>` : ""}
+    <details ${conVimeo ? "open" : ""} style="margin-top:8px"><summary class="ayuda" style="cursor:pointer">O pega una liga de Vimeo</summary>
+      <input name="liga" value="${conVimeo ? `https://vimeo.com/${v.vimeo_id}${v.vimeo_h ? `/${v.vimeo_h}` : ""}` : ""}" placeholder="https://vimeo.com/123456789/abc123"></details>
     <label>Descripción (opcional)</label><textarea name="descripcion" rows="3">${esc(v.descripcion || "")}</textarea>
     <div class="dos"><div><label>Módulo</label><select name="modulo_id">${opcionesModulo(v.modulo_id)}</select></div>
       <div><label>¿Quién lo ve?</label>${selPlan(v.plan_min)}</div></div>
-    <div class="dos"><div><label>Minutos</label><input name="minutos" type="number" value="${v.minutos ?? ""}"></div><div><label>Orden</label><input name="orden" type="number" value="${v.orden ?? 1}"></div></div>
+    <div class="dos"><div><label>Orden</label><input name="orden" type="number" value="${v.orden ?? 1}"></div><div><label>Minutos (se llena solo)</label><input name="minutos" type="number" value="${v.minutos ?? ""}"></div></div>
     <label class="check"><input type="checkbox" name="publicado" ${v.publicado === 0 ? "" : "checked"}> Publicado</label>
-    <div class="fila-btns"><button class="btn btn-rojo btn-chico">Guardar</button>${v.id ? `<button type="button" class="btn btn-claro btn-chico" id="borrar">Borrar</button>` : ""}</div></form>`);
+    <div class="fila-btns"><button class="btn btn-rojo btn-chico" id="guardar-video">Guardar</button>${v.id ? `<button type="button" class="btn btn-claro btn-chico" id="borrar">Borrar</button>` : ""}</div></form>`);
   $("#f-video").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = new FormData(e.target);
-    try { await api(v.id ? `/api/admin/videos/${v.id}` : "/api/admin/videos", { metodo: v.id ? "PUT" : "POST", datos: { ...Object.fromEntries(f), publicado: f.get("publicado") === "on" } }); cerrar(); cargarContenido(); }
-    catch (err) { aviso(err.message); }
+    const archivo = f.get("archivo");
+    const datos = { ...Object.fromEntries(f), publicado: f.get("publicado") === "on" };
+    delete datos.archivo;
+    const btn = $("#guardar-video");
+    btn.disabled = true;
+    try {
+      if (archivo && archivo.size) {
+        $("#progreso").hidden = false;
+        datos.stream_uid = await subirAStream(archivo, f.get("titulo"), (pct) => {
+          $("#barra").style.width = `${pct}%`;
+          $("#progreso-txt").textContent = `Subiendo… ${pct}% (${(archivo.size / 1024 ** 2).toFixed(0)} MB)`;
+        });
+        $("#progreso-txt").textContent = "Subido ✓ Stream lo está procesando (unos minutos).";
+      }
+      await api(v.id ? `/api/admin/videos/${v.id}` : "/api/admin/videos", { metodo: v.id ? "PUT" : "POST", datos });
+      cerrar(); aviso(datos.stream_uid ? "Video subido. En unos minutos queda listo." : "Guardado"); cargarContenido();
+    } catch (err) { aviso(err.message, 6000); } finally { btn.disabled = false; }
   });
   $("#borrar")?.addEventListener("click", async () => {
-    if (!confirm("¿Borrar este video de la plataforma? (En Vimeo no se borra)")) return;
+    if (!confirm("¿Borrar este video? Se quita de la plataforma y del almacenamiento.")) return;
     await api(`/api/admin/videos/${v.id}`, { metodo: "DELETE" }); cerrar(); cargarContenido();
   });
+}
+
+/** Subida por partes (protocolo tus) directo del navegador a Cloudflare Stream; reintenta cada parte si falla la red. */
+async function subirAStream(archivo, nombre, alAvanzar) {
+  const { url, uid } = await api("/api/admin/stream/subir", { metodo: "POST", datos: { nombre: nombre || archivo.name, tamano: archivo.size } });
+  const PARTE = 50 * 1024 * 1024; // múltiplo de 256 KiB, como pide Stream
+  let offset = 0;
+  while (offset < archivo.size) {
+    const trozo = archivo.slice(offset, offset + PARTE);
+    let ok = false;
+    for (let intento = 0; intento < 4 && !ok; intento++) {
+      try {
+        const res = await fetch(url, {
+          method: "PATCH",
+          headers: { "Tus-Resumable": "1.0.0", "Upload-Offset": String(offset), "Content-Type": "application/offset+octet-stream" },
+          body: trozo,
+        });
+        if (res.status === 204 || res.ok) { offset = Number(res.headers.get("Upload-Offset")) || offset + trozo.size; ok = true; }
+        else if (res.status === 409) {
+          // El servidor tiene otro avance: preguntamos dónde quedó y seguimos desde ahí.
+          const h = await fetch(url, { method: "HEAD", headers: { "Tus-Resumable": "1.0.0" } });
+          offset = Number(h.headers.get("Upload-Offset")) || offset; ok = true;
+        } else throw new Error(`Stream ${res.status}`);
+      } catch (e) {
+        if (intento === 3) throw new Error("Se cortó la subida. Revisa tu internet y vuelve a intentar.");
+        await new Promise((r) => setTimeout(r, 2000 * (intento + 1)));
+      }
+    }
+    alAvanzar(Math.min(100, Math.round((offset / archivo.size) * 100)));
+  }
+  return uid;
 }
 
 const PLANTILLA = `# Título de la lección

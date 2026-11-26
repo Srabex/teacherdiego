@@ -56,7 +56,11 @@ const TABLAS = [
 ];
 
 /** Columnas nuevas en el futuro: { nombre: "mig_xxx", sql: "ALTER TABLE ..." } */
-const MIGRACIONES = [];
+const MIGRACIONES = [
+  // Cloudflare Stream (25 nov 2026): el video vive en Stream; vimeo_id queda vacío. stream_listo = ya se puede ver.
+  { nombre: "mig_stream_uid", sql: "ALTER TABLE videos ADD COLUMN stream_uid TEXT" },
+  { nombre: "mig_stream_listo", sql: "ALTER TABLE videos ADD COLUMN stream_listo INTEGER NOT NULL DEFAULT 0" },
+];
 
 const LECCION_EJEMPLO = `# Bienvenido a tu manual
 Esta es una lección de ejemplo. Así se ve el material dentro de la plataforma: se lee aquí, se contesta aquí y tus respuestas se guardan solas.

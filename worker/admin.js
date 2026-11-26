@@ -5,6 +5,7 @@ import { accesoDe, gracia, PLANES } from "./db.js";
 import { esAdmin } from "./auth.js";
 import { revisarAlumno, registrarPago } from "./mp.js";
 import { vimeoDeLiga } from "./contenido.js";
+import { crearSubida, estadoVideo, borrarVideo, streamListo } from "./stream.js";
 import { parsear } from "../public/s/formato.js";
 
 const plan = (v) => (PLANES.includes(v) ? v : "normal");
@@ -104,6 +105,7 @@ export async function rutasAdmin(request, env, url, r) {
       env.DB.prepare("SELECT id, modulo_id, titulo, plan_min, orden, publicado, actualizado FROM lecciones ORDER BY orden, id").all(),
     ]);
     return json({
+      stream_listo: streamListo(env),
       modulos: mods.results.map((mo) => ({
         ...mo,
         videos: vids.results.filter((v) => v.modulo_id === mo.id),
@@ -128,19 +130,40 @@ export async function rutasAdmin(request, env, url, r) {
     return json({ ok: true });
   }
 
+  // Subir a Cloudflare Stream: el Worker solo prepara la subida; el archivo va del navegador directo a Stream.
+  if (pathname === "/api/admin/stream/subir" && m === "POST") {
+    const b = await leerJson(request);
+    return json(await crearSubida(env, limpiar(b.nombre, 120), b.tamano));
+  }
+  // Revisa si Stream ya terminó de procesar (y guarda la duración).
+  if ((mm = /^\/api\/admin\/videos\/(\d+)\/estado$/.exec(pathname)) && m === "POST") {
+    const v = await env.DB.prepare("SELECT * FROM videos WHERE id = ?").bind(mm[1]).first();
+    if (!v?.stream_uid) throw new Publico("Ese video no está en Stream.", 404);
+    const e = await estadoVideo(env, v.stream_uid);
+    if (e.listo) await env.DB.prepare("UPDATE videos SET stream_listo = 1, minutos = COALESCE(minutos, ?) WHERE id = ?").bind(e.minutos, v.id).run();
+    return json(e);
+  }
+
   if ((pathname === "/api/admin/videos" && m === "POST") || ((mm = /^\/api\/admin\/videos\/(\d+)$/.exec(pathname)) && m === "PUT")) {
     const b = await leerJson(request);
     const titulo = limpiar(b.titulo, 160);
-    const v = vimeoDeLiga(b.liga);
     if (!titulo) throw new Publico("Escribe el título del video.");
-    if (!v) throw new Publico("Pega la liga del video de Vimeo.");
-    const vals = [num(b.modulo_id), titulo, limpiar(b.descripcion, 600) || null, v.id, v.h || null, num(b.minutos) || null, plan(b.plan_min), num(b.orden), bit(b.publicado ?? 1)];
-    if (m === "POST") await env.DB.prepare("INSERT INTO videos (modulo_id, titulo, descripcion, vimeo_id, vimeo_h, minutos, plan_min, orden, publicado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(...vals).run();
-    else await env.DB.prepare("UPDATE videos SET modulo_id = ?, titulo = ?, descripcion = ?, vimeo_id = ?, vimeo_h = ?, minutos = ?, plan_min = ?, orden = ?, publicado = ? WHERE id = ?").bind(...vals, mm[1]).run();
+    const previo = mm ? await env.DB.prepare("SELECT * FROM videos WHERE id = ?").bind(mm[1]).first() : null;
+    const uid = /^[a-f0-9]{32}$/i.test(String(b.stream_uid || "")) ? String(b.stream_uid) : previo?.stream_uid || null;
+    const v = uid ? null : vimeoDeLiga(b.liga);
+    if (!uid && !v) throw new Publico("Sube el archivo del video (o pega una liga de Vimeo).");
+    const listo = uid ? (uid === previo?.stream_uid ? previo.stream_listo : 0) : 0;
+    const vals = [num(b.modulo_id), titulo, limpiar(b.descripcion, 600) || null, v?.id || "", v?.h || null, uid, listo, num(b.minutos) || null, plan(b.plan_min), num(b.orden), bit(b.publicado ?? 1)];
+    if (m === "POST") await env.DB.prepare("INSERT INTO videos (modulo_id, titulo, descripcion, vimeo_id, vimeo_h, stream_uid, stream_listo, minutos, plan_min, orden, publicado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(...vals).run();
+    else await env.DB.prepare("UPDATE videos SET modulo_id = ?, titulo = ?, descripcion = ?, vimeo_id = ?, vimeo_h = ?, stream_uid = ?, stream_listo = ?, minutos = ?, plan_min = ?, orden = ?, publicado = ? WHERE id = ?").bind(...vals, mm[1]).run();
+    // Si se reemplazó el archivo, el viejo se borra de Stream (para no pagar por guardarlo).
+    if (previo?.stream_uid && previo.stream_uid !== uid) await borrarVideo(env, previo.stream_uid);
     return json({ ok: true });
   }
   if ((mm = /^\/api\/admin\/videos\/(\d+)$/.exec(pathname)) && m === "DELETE") {
+    const v = await env.DB.prepare("SELECT stream_uid FROM videos WHERE id = ?").bind(mm[1]).first();
     await env.DB.prepare("DELETE FROM videos WHERE id = ?").bind(mm[1]).run();
+    if (v?.stream_uid) await borrarVideo(env, v.stream_uid);
     return json({ ok: true });
   }
 
