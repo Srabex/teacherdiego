@@ -33,7 +33,7 @@ Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago)
 ## Arquitectura (sin compilación, sin npm)
 - `worker/index.js` (rutas) · `db.js` (tablas que se crean solas + acceso) · `auth.js` (código por correo, sesiones) · `contenido.js` (catálogo, video, lección) · `admin.js` (panel) · `mp.js` (Mercado Pago) · `util.js`.
 - `public/`: `index.html` (landing), `entrar.html`, `clases.html` + `s/clases.js`, `admin.html` + `s/admin.js`, `s/hoja.js` (pinta lecciones), `s/formato.js` (lo usan Worker y panel), `s/estilos.css`, `s/app.css`, fuentes Lora + Poppins servidas desde `s/fuentes/`.
-- D1 `teacherdiego` (binding `DB`): `alumnos`, `codigos`, `sesiones`, `modulos`, `videos`, `lecciones`, `respuestas`, `pagos`, `mp_avisos`, `meta`. **Se crean solas** al primer `/api/*` (con un módulo y una lección de ejemplo). Columnas nuevas: agregar a `MIGRACIONES` en `db.js`.
+- D1 `teacherdiego` (ID 42ea061f-a4fb-4c5a-9ed2-57b25c7bee7a, binding `DB`): `alumnos`, `codigos`, `sesiones`, `modulos`, `videos`, `lecciones`, `respuestas`, `pagos`, `mp_avisos`, `meta`. **Se crean solas** al primer `/api/*` (con un módulo y una lección de ejemplo). Columnas nuevas: agregar a `MIGRACIONES` en `db.js`.
 - Precios, WhatsApp, admins y remitente en `vars` de `wrangler.jsonc` (la landing los lee de `/api/publico`). Secrets: `RESEND_API_KEY` (remitente `teacherdiego@asesorsebas.com`), `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`.
 - Dominio temporal: `teacherdiego.asesorsebas.com` (custom domain en `routes`). Al tener el dominio de Diego: comprarlo en Cloudflare a su nombre, cambiar `routes`, `DOMINIO`, `REDIRIGIR` (el subdominio viejo), las URLs absolutas `og:`/canonical/robots/sitemap, y agregar el dominio en Vimeo.
 
