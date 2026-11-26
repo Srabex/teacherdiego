@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="6" y="4" width="52" height="56" rx="8" fill="#13233F"/>
+  <rect x="6" y="4" width="9" height="56" rx="4" fill="#2148A0"/>
+  <path d="M40 4h11v20l-5.5-4.5L40 24z" fill="#C8102E"/>
+  <text x="36" y="47" text-anchor="middle" font-family="Lora, Georgia, 'Times New Roman', serif" font-weight="700" font-size="25" fill="#F6F2EA" letter-spacing="-1">TD</text>
+  <rect x="22" y="51" width="28" height="2" rx="1" fill="#C8102E"/>
+</svg>

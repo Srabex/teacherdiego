@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "teacherdiego",
+  "main": "worker/index.js",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "404-page"
+  },
+  // Dominio temporal mientras Diego decide el suyo (comprarlo en Cloudflare y cambiar DOMINIO + las URLs de og:).
+  "routes": [
+    { "pattern": "teacherdiego.asesorsebas.com", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "teacherdiego",
+      // Pegar aquí el "Database ID" de D1 (Storage & databases → D1 → Create → teacherdiego). Las tablas se crean solas.
+      "database_id": "PEGAR-AQUI-EL-ID-DE-D1"
+    }
+  ],
+  "vars": {
+    "DOMINIO": "teacherdiego.asesorsebas.com",
+    // Dominios viejos que redirigen (301) al principal, separados por coma.
+    "REDIRIGIR": "",
+    // Pueden entrar al panel /admin (con el mismo código por correo). Agregar el correo de Diego.
+    "ADMIN_EMAILS": "srab17.6@gmail.com",
+    "REMITENTE": "Teacher Diego <teacherdiego@asesorsebas.com>",
+    // WhatsApp para dudas (52 + 10 dígitos). Temporal: el de Sebas, hasta tener el de Diego.
+    "WHATSAPP": "526142355166",
+    // Precio mensual en pesos (vacío = "por confirmar" y no deja pagar).
+    "PRECIO_NORMAL": "",
+    "PRECIO_VIP": "",
+    // Días que sigue entrando después de que vence su mes si el cobro falló.
+    "GRACIA_DIAS": "3"
+  },
+  // Secrets (Settings → Variables and Secrets, tipo Secret): RESEND_API_KEY, MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+}

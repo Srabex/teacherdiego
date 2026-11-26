@@ -1,0 +1,9 @@
+{
+  "name": "teacherdiego",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "dev": "node herramientas/dev.mjs"
+  }
+}

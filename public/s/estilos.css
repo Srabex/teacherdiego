@@ -1,0 +1,177 @@
+/* Teacher Diego — "El manual": azul real, marino, rojo y perla. Lora (títulos) + Poppins (texto). */
+@font-face { font-family: "Lora"; src: url("fuentes/Lora-Variable.woff") format("woff"); font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Lora"; src: url("fuentes/Lora-Italic-Variable.woff") format("woff"); font-weight: 400 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fuentes/Poppins-Regular.woff") format("woff"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fuentes/Poppins-Medium.woff") format("woff"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fuentes/Poppins-Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
+
+:root {
+  --marino: #13233F;
+  --marino2: #1B2F52;
+  --azul: #2148A0;
+  --azul-claro: #E6ECF7;
+  --rojo: #C8102E;
+  --rojo-osc: #A50D26;
+  --perla: #F6F2EA;
+  --perla2: #ECE5D6;
+  --linea: #DCD3C1;
+  --tinta: #1B2433;
+  --gris: #5E6677;
+  --verde: #1E7B4F;
+  --ambar: #B7791F;
+  --radio: 14px;
+  --sombra: 0 10px 30px rgba(19, 35, 63, .10);
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: "Poppins", system-ui, sans-serif; color: var(--tinta); background: var(--perla); line-height: 1.6; font-size: 16px; }
+img { max-width: 100%; display: block; }
+a { color: var(--azul); }
+h1, h2, h3, .serif { font-family: "Lora", Georgia, serif; color: var(--marino); line-height: 1.15; margin: 0 0 .5em; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+p { margin: 0 0 1em; }
+.contenedor { width: min(1120px, 100% - 40px); margin-inline: auto; }
+.kicker { font-size: .78rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--rojo); margin-bottom: .8em; display: inline-flex; align-items: center; gap: .6em; }
+.kicker::before { content: ""; width: 28px; height: 2px; background: var(--rojo); }
+
+/* Botones */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5em; padding: .9em 1.5em; border-radius: 999px; border: 2px solid transparent; font: 600 1rem "Poppins", sans-serif; text-decoration: none; cursor: pointer; transition: transform .15s, background .15s, box-shadow .15s; min-height: 48px; }
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: .6; cursor: default; transform: none; }
+.btn-rojo { background: var(--rojo); color: #fff; box-shadow: 0 8px 20px rgba(200, 16, 46, .25); }
+.btn-rojo:hover { background: var(--rojo-osc); }
+.btn-azul { background: var(--azul); color: #fff; }
+.btn-marino { background: var(--marino); color: #fff; }
+.btn-borde { background: transparent; border-color: var(--marino); color: var(--marino); }
+.btn-claro { background: #fff; color: var(--marino); border-color: var(--linea); }
+.btn-chico { padding: .45em 1em; min-height: 36px; font-size: .88rem; }
+.btn-wa { background: #1FAF55; color: #fff; }
+
+/* Logo */
+.logo { display: inline-flex; align-items: center; gap: .65em; text-decoration: none; color: var(--marino); }
+.logo svg { width: 40px; height: 40px; flex: none; }
+.logo b { font-family: "Lora", serif; font-size: 1.25rem; font-weight: 700; display: block; line-height: 1; }
+.logo small { display: block; font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--rojo); font-weight: 700; margin-top: 3px; }
+
+/* Encabezado */
+.encabezado { position: sticky; top: 0; z-index: 20; background: rgba(246, 242, 234, .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); }
+.encabezado .contenedor { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
+.encabezado nav { display: flex; gap: 22px; align-items: center; }
+.encabezado nav a:not(.btn) { color: var(--marino); text-decoration: none; font-weight: 500; font-size: .95rem; }
+@media (max-width: 760px) { .encabezado nav a:not(.btn) { display: none; } }
+
+/* Portada */
+.portada { padding: 56px 0 72px; position: relative; overflow: hidden; }
+.portada::after { content: ""; position: absolute; right: -120px; top: -80px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(33, 72, 160, .12), transparent 65%); z-index: -1; }
+.portada .contenedor { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+.portada .lead { font-size: 1.15rem; color: var(--gris); max-width: 34em; }
+.portada .acciones { display: flex; gap: 12px; flex-wrap: wrap; margin: 26px 0 18px; }
+.portada .confianza { font-size: .88rem; color: var(--gris); display: flex; gap: 18px; flex-wrap: wrap; }
+.portada .confianza span::before { content: "✓ "; color: var(--verde); font-weight: 700; }
+.foto-diego { position: relative; justify-self: center; width: min(420px, 100%); }
+.foto-diego .marco { border-radius: 22px; overflow: hidden; box-shadow: var(--sombra); border: 6px solid #fff; transform: rotate(1.5deg); background: var(--marino); }
+.foto-diego .marco img { width: 100%; aspect-ratio: 702 / 860; object-fit: cover; object-position: top; }
+.foto-diego .sello { position: absolute; left: -22px; bottom: 34px; background: var(--rojo); color: #fff; border-radius: 12px; padding: 12px 16px; box-shadow: var(--sombra); transform: rotate(-4deg); font-family: "Lora", serif; line-height: 1.1; }
+.foto-diego .sello b { display: block; font-size: 1.2rem; }
+.foto-diego .sello small { font-family: "Poppins"; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .9; }
+.foto-diego .cinta { position: absolute; right: 26px; top: -10px; width: 34px; height: 70px; background: var(--rojo); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+@media (max-width: 860px) {
+  .portada { padding-top: 30px; }
+  .portada .contenedor { grid-template-columns: 1fr; gap: 34px; }
+  .foto-diego { width: min(330px, 86%); }
+}
+
+/* Franja */
+.franja { background: var(--marino); color: #fff; }
+.franja .contenedor { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 22px 0; }
+.franja div { display: flex; gap: 12px; align-items: center; font-size: .92rem; }
+.franja b { font-family: "Lora", serif; font-size: 1.7rem; color: #fff; }
+.franja i { font-style: normal; font-size: 1.4rem; }
+@media (max-width: 760px) { .franja .contenedor { grid-template-columns: 1fr 1fr; } }
+
+.seccion { padding: 80px 0; }
+.seccion.blanca { background: #fff; }
+.seccion .cabeza { max-width: 640px; margin-bottom: 40px; }
+.seccion .cabeza.centro { margin-inline: auto; text-align: center; }
+.seccion .cabeza.centro .kicker { justify-content: center; }
+.seccion .cabeza p { color: var(--gris); font-size: 1.05rem; }
+
+/* Pasos (como capítulos de un manual) */
+.pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: paso; }
+.paso { background: var(--perla); border: 1px solid var(--linea); border-radius: var(--radio); padding: 28px 24px; position: relative; }
+.paso::before { counter-increment: paso; content: "Cap. " counter(paso); font: 700 .75rem "Poppins"; letter-spacing: .16em; text-transform: uppercase; color: var(--rojo); display: block; margin-bottom: 10px; }
+.paso p { color: var(--gris); margin: 0; }
+@media (max-width: 760px) { .pasos { grid-template-columns: 1fr; } }
+
+/* Membresías */
+.planes { display: grid; grid-template-columns: repeat(2, minmax(0, 420px)); gap: 24px; justify-content: center; }
+.plan { background: #fff; border: 1px solid var(--linea); border-radius: 20px; padding: 32px 28px; display: flex; flex-direction: column; box-shadow: var(--sombra); position: relative; }
+.plan.vip { background: var(--marino); color: #fff; border-color: var(--marino); }
+.plan.vip h3, .plan.vip .precio { color: #fff; }
+.plan .etiqueta { position: absolute; top: -13px; right: 24px; background: var(--rojo); color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+.plan h3 { font-size: 1.5rem; margin-bottom: .2em; }
+.plan .precio { font-family: "Lora", serif; font-size: 2.6rem; font-weight: 700; color: var(--marino); line-height: 1; margin: 12px 0 4px; }
+.plan .precio small { font: 500 1rem "Poppins"; opacity: .7; }
+.plan .nota { font-size: .85rem; opacity: .75; margin-bottom: 18px; }
+.plan ul { list-style: none; padding: 0; margin: 0 0 26px; flex: 1; }
+.plan li { padding: 8px 0 8px 28px; position: relative; border-bottom: 1px dashed rgba(127, 127, 127, .25); }
+.plan li::before { content: "✓"; position: absolute; left: 0; color: var(--rojo); font-weight: 700; }
+.plan.vip li::before { color: #FF6B7F; }
+.plan .pendiente { font-size: .75rem; font-weight: 600; background: rgba(183, 121, 31, .15); color: var(--ambar); padding: 2px 8px; border-radius: 6px; margin-left: 4px; }
+.plan.vip .pendiente { color: #F3C77A; }
+@media (max-width: 760px) { .planes { grid-template-columns: 1fr; } }
+
+/* Sobre Diego */
+.sobre { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center; }
+.sobre img { border-radius: 20px; box-shadow: var(--sombra); aspect-ratio: 4 / 5; object-fit: cover; object-position: top; }
+.firma { font-family: "Lora", serif; font-style: italic; font-size: 1.6rem; color: var(--azul); }
+@media (max-width: 760px) { .sobre { grid-template-columns: 1fr; } .sobre img { max-width: 320px; } }
+
+/* Preguntas */
+.preguntas { max-width: 760px; margin-inline: auto; }
+.preguntas details { background: #fff; border: 1px solid var(--linea); border-radius: 12px; margin-bottom: 10px; padding: 0 20px; }
+.preguntas summary { cursor: pointer; padding: 18px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.preguntas summary::after { content: "+"; color: var(--rojo); font-size: 1.3rem; line-height: 1; }
+.preguntas details[open] summary::after { content: "–"; }
+.preguntas details p { color: var(--gris); }
+
+.cierre { background: var(--azul); color: #fff; text-align: center; }
+.cierre h2 { color: #fff; }
+.cierre p { opacity: .85; }
+
+.pie { background: var(--marino); color: rgba(255, 255, 255, .75); padding: 36px 0; font-size: .9rem; }
+.pie .contenedor { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.pie a { color: #fff; }
+.pie .logo { color: #fff; }
+.pie .logo b { color: #fff; }
+
+/* ---------- Formularios y tarjetas (entrar, clases, admin) ---------- */
+.tarjeta { background: #fff; border: 1px solid var(--linea); border-radius: var(--radio); padding: 24px; box-shadow: var(--sombra); }
+label { display: block; font-weight: 500; font-size: .9rem; margin: 14px 0 6px; }
+input, select, textarea { width: 100%; font: 400 1rem "Poppins", sans-serif; padding: 12px 14px; border: 1.5px solid var(--linea); border-radius: 10px; background: #fff; color: var(--tinta); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px var(--azul-claro); }
+textarea { min-height: 120px; resize: vertical; }
+.codigo-input { font-size: 1.8rem; letter-spacing: .5em; text-align: center; font-weight: 700; }
+.error { color: var(--rojo); font-size: .9rem; margin-top: 10px; }
+.ayuda { color: var(--gris); font-size: .85rem; }
+
+.aviso { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--marino); color: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: var(--sombra); z-index: 100; font-size: .95rem; max-width: calc(100% - 32px); }
+
+.pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .04em; white-space: nowrap; }
+.pill.vip { background: var(--marino); color: #fff; }
+.pill.normal { background: var(--azul-claro); color: var(--azul); }
+.pill.ok { background: #E3F3EA; color: var(--verde); }
+.pill.gracia { background: #FBF0DC; color: var(--ambar); }
+.pill.no { background: #FBE3E7; color: var(--rojo); }
+.pill.cortesia { background: #EEE8FB; color: #5B3FB5; }
+.pill.gris { background: var(--perla2); color: var(--gris); }
+
+/* Contenido protegido: sin seleccionar, sin imprimir, con marca de agua del correo del alumno. */
+.protegido { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; }
+.protegido input, .protegido textarea { -webkit-user-select: text; user-select: text; }
+.marca-agua { position: absolute; inset: 0; pointer-events: none; z-index: 5; background-repeat: repeat; opacity: .13; }
+.marca-video { position: absolute; z-index: 6; pointer-events: none; color: rgba(255, 255, 255, .55); font: 600 13px "Poppins"; text-shadow: 0 1px 2px rgba(0, 0, 0, .6); transition: top 1.5s, left 1.5s; white-space: nowrap; }
+@media print { body * { display: none !important; } body::after { content: "Contenido protegido · Teacher Diego"; display: block; font: 20px sans-serif; padding: 40px; } }

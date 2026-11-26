@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi manual · Teacher Diego</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#13233F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/s/estilos.css">
+<link rel="stylesheet" href="/s/app.css">
+</head>
+<body class="app">
+<header class="barra">
+  <div class="contenedor">
+    <a class="logo" href="/clases" id="logo"></a>
+    <div class="barra-der">
+      <span id="mi-plan"></span>
+      <button class="btn btn-claro btn-chico" id="btn-cuenta">Mi cuenta</button>
+    </div>
+  </div>
+</header>
+
+<main class="contenedor app-main">
+  <div id="cargando" class="ayuda">Cargando tu manual…</div>
+
+  <section id="estado"></section>
+
+  <section id="manual" hidden>
+    <div class="saludo">
+      <span class="kicker">Tu manual</span>
+      <h1 id="hola">Hi!</h1>
+    </div>
+    <div id="modulos"></div>
+  </section>
+
+  <section id="vista" hidden>
+    <button class="btn btn-claro btn-chico" id="volver">← Volver al manual</button>
+    <div id="vista-cont"></div>
+  </section>
+</main>
+
+<dialog id="cuenta" class="dialogo">
+  <form method="dialog" class="dialogo-cab"><h2>Mi cuenta</h2><button class="cerrar" aria-label="Cerrar">×</button></form>
+  <div id="cuenta-cont"></div>
+</dialog>
+
+<script src="/s/clases.js" type="module"></script>
+</body>
+</html>

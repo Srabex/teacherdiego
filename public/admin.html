@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Teacher Diego</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#13233F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/s/estilos.css">
+<link rel="stylesheet" href="/s/app.css">
+</head>
+<body class="app">
+<header class="barra">
+  <div class="contenedor">
+    <a class="logo" href="/admin" id="logo"></a>
+    <div class="barra-der">
+      <a class="btn btn-claro btn-chico" href="/clases">Ver como alumno</a>
+      <button class="btn btn-claro btn-chico" id="salir">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="contenedor app-main">
+  <nav class="pestanas" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="alumnos">Alumnos</button>
+    <button role="tab" aria-selected="false" data-tab="contenido">Contenido</button>
+    <button role="tab" aria-selected="false" data-tab="pagos">Pagos</button>
+  </nav>
+
+  <section data-panel="alumnos">
+    <div class="cifras" id="cifras"></div>
+    <div class="herramientas">
+      <input id="buscar" type="search" placeholder="Buscar por nombre, correo o WhatsApp">
+      <button class="btn btn-azul btn-chico" id="nuevo-alumno">+ Alumno</button>
+    </div>
+    <div class="lista" id="lista-alumnos"></div>
+  </section>
+
+  <section data-panel="contenido" hidden>
+    <div class="herramientas">
+      <p class="ayuda" style="flex:1;margin:0">Módulos = capítulos del manual. Dentro van los videos (liga de Vimeo) y las lecciones con ejercicios.</p>
+      <button class="btn btn-azul btn-chico" id="nuevo-modulo">+ Módulo</button>
+    </div>
+    <div id="lista-modulos"></div>
+  </section>
+
+  <section data-panel="pagos" hidden>
+    <div id="pagos"></div>
+  </section>
+</main>
+
+<dialog id="dlg" class="dialogo">
+  <form method="dialog" class="dialogo-cab"><h2 id="dlg-titulo"></h2><button class="cerrar" aria-label="Cerrar">×</button></form>
+  <div id="dlg-cont"></div>
+</dialog>
+
+<script src="/s/admin.js" type="module"></script>
+</body>
+</html>

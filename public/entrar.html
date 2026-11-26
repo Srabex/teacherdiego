@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar · Teacher Diego</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#13233F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="Entra a tu manual · Teacher Diego">
+<meta property="og:image" content="https://teacherdiego.asesorsebas.com/og.jpg">
+<link rel="stylesheet" href="/s/estilos.css">
+<style>
+  body { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: linear-gradient(160deg, var(--perla) 0%, var(--perla2) 100%); }
+  .caja { width: min(440px, 100%); }
+  .caja .logo { margin: 0 auto 22px; display: flex; justify-content: center; }
+  .caja h1 { font-size: 1.7rem; text-align: center; }
+  .caja .sub { text-align: center; color: var(--gris); margin-bottom: 8px; }
+  .caja .btn { width: 100%; margin-top: 18px; }
+  .enlace { background: none; border: 0; color: var(--azul); font: 500 .95rem "Poppins"; cursor: pointer; padding: 10px 0 0; width: 100%; text-decoration: underline; }
+</style>
+</head>
+<body>
+<main class="caja">
+  <a class="logo" href="/" id="logo"></a>
+
+  <form class="tarjeta" id="paso-correo">
+    <h1>Entra a tu manual</h1>
+    <p class="sub">Te mandamos un código a tu correo. Sin contraseñas.</p>
+    <label for="correo">Tu correo</label>
+    <input id="correo" type="email" autocomplete="email" inputmode="email" required placeholder="tucorreo@gmail.com">
+    <button class="btn btn-rojo" type="submit">Mandarme el código</button>
+    <p class="error" hidden></p>
+    <button class="enlace" type="button" data-ir="registro">¿Primera vez? Crea tu cuenta</button>
+  </form>
+
+  <form class="tarjeta" id="paso-registro" hidden>
+    <h1>Crea tu cuenta</h1>
+    <p class="sub">Un minuto y listo. Después eliges tu membresía.</p>
+    <label for="r-nombre">Nombre</label>
+    <input id="r-nombre" autocomplete="name" required>
+    <label for="r-correo">Correo</label>
+    <input id="r-correo" type="email" autocomplete="email" inputmode="email" required>
+    <label for="r-wa">WhatsApp (10 dígitos)</label>
+    <input id="r-wa" type="tel" autocomplete="tel" inputmode="tel" required placeholder="614 123 4567">
+    <p class="ayuda">Al registrarte aceptas el <a href="/privacidad" target="_blank">aviso de privacidad</a>.</p>
+    <button class="btn btn-rojo" type="submit">Crear cuenta</button>
+    <p class="error" hidden></p>
+    <button class="enlace" type="button" data-ir="correo">Ya tengo cuenta</button>
+  </form>
+
+  <form class="tarjeta" id="paso-codigo" hidden>
+    <h1>Revisa tu correo</h1>
+    <p class="sub">Escribe el código de 6 números que mandamos a <b id="a-correo"></b>.</p>
+    <input id="codigo" class="codigo-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+    <p class="ayuda" id="dev" hidden></p>
+    <button class="btn btn-rojo" type="submit">Entrar</button>
+    <p class="error" hidden></p>
+    <button class="enlace" type="button" data-ir="correo">Usar otro correo</button>
+  </form>
+</main>
+<script type="module">
+import { $, api, LOGO } from "/s/comun.js";
+
+$("#logo").innerHTML = `${LOGO}<span><b>Teacher Diego</b><small>El manual</small></span>`;
+const q = new URLSearchParams(location.search);
+if (q.get("plan")) sessionStorage.setItem("td_plan", q.get("plan"));
+let correo = "";
+
+function ver(paso) {
+  for (const id of ["correo", "registro", "codigo"]) $(`#paso-${id}`).hidden = id !== paso;
+  const f = $(`#paso-${paso} input`); f && setTimeout(() => f.focus(), 50);
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-ir]");
+  if (b) { if (b.dataset.ir === "registro") $("#r-correo").value = $("#correo").value; ver(b.dataset.ir); }
+});
+
+async function enviar(form, fn) {
+  const err = form.querySelector(".error"), btn = form.querySelector("button[type=submit]");
+  err.hidden = true; btn.disabled = true;
+  try { await fn(); } catch (e) { err.textContent = e.message; err.hidden = false; return e; } finally { btn.disabled = false; }
+}
+function codigoMandado(r) {
+  $("#a-correo").textContent = correo;
+  $("#dev").hidden = !r.dev_codigo;
+  if (r.dev_codigo) $("#dev").textContent = `(Prueba local) Tu código: ${r.dev_codigo}`;
+  ver("codigo");
+}
+
+$("#paso-correo").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  correo = $("#correo").value.trim();
+  const fallo = await enviar(e.target, async () => codigoMandado(await api("/api/codigo", { metodo: "POST", datos: { correo } })));
+  if (fallo?.codigo === "no_encontrado") { $("#r-correo").value = correo; ver("registro"); }
+});
+$("#paso-registro").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  correo = $("#r-correo").value.trim();
+  await enviar(e.target, async () => codigoMandado(await api("/api/registro", { metodo: "POST", datos: { nombre: $("#r-nombre").value, correo, whatsapp: $("#r-wa").value } })));
+});
+$("#paso-codigo").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await enviar(e.target, async () => {
+    const yo = await api("/api/entrar", { metodo: "POST", datos: { correo, codigo: $("#codigo").value } });
+    location.href = yo.admin ? "/admin" : "/clases";
+  });
+});
+
+// Si ya hay sesión, directo a su lugar.
+api("/api/yo").then((yo) => { location.replace(yo.admin ? "/admin" : "/clases"); }).catch(() => ver(q.get("registro") ? "registro" : "correo"));
+</script>
+</body>
+</html>
