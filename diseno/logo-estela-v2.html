@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><style>
+@font-face{font-family:P;src:url(../public/s/fuentes/Poppins-Bold.woff);font-weight:700}
+@font-face{font-family:P;src:url(../public/s/fuentes/Poppins-Medium.woff);font-weight:500}
+html,body{margin:0;width:1600px;background:#F6F2EA;font-family:P;color:#13233F}
+.top{padding:40px 60px 0}h1{font-size:40px;margin:0}.top p{margin:6px 0 0;font-size:19px;color:#5E6677;font-weight:500}
+.fila{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:22px 60px}
+.c{background:#fff;border-radius:24px;padding:22px 24px;box-shadow:0 8px 26px rgba(19,35,63,.07)}
+.c.rec{outline:4px solid #C8102E}
+.lab{font-size:14px;font-weight:700;letter-spacing:.12em;color:#5E6677;margin-bottom:10px}
+.lienzo{height:230px;display:flex;align-items:center;justify-content:center;gap:26px;border-radius:14px;background:#F6F2EA}
+.wm{font-weight:700;line-height:.95;font-size:58px;letter-spacing:-.5px}.sub{font-weight:500;letter-spacing:.28em;font-size:13px;color:#C8102E;margin-top:8px}
+.abajo{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;padding:0 60px 46px}
+.prueba{display:flex;align-items:flex-end;gap:22px;padding:18px;background:#fff;border-radius:20px}
+.prueba>div{text-align:center;font-size:12px;color:#5E6677}
+.ic{display:grid;place-items:center;border-radius:22%;margin:0 auto 6px;background:#fff;border:1px solid #E5DED0}
+.osc{background:#13233F;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:22px;padding:18px}
+.osc .wm{color:#F6F2EA;font-size:40px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="viejo"><path d="M0 9 L70 1 L79 13z" fill="var(--a)" opacity=".6"/><path d="M0 111 L70 119 L79 107z" fill="var(--a)" opacity=".6"/><path d="M22 60 L66 54 L66 66z" fill="var(--a)" opacity=".35"/><path d="M62 0h44l44 60-44 60H62l44-60z" fill="var(--a)"/><path d="M116 0h44l44 60-44 60h-44l44-60z" fill="var(--r)"/></g>
+  <!-- Nuevo: estelas de arriba y abajo alineadas con los bordes de la flecha; la del centro larga y fina, apuntando a la muesca -->
+  <g id="nuevo">
+    <path d="M0 0 H56 V13 Z" fill="var(--a)" opacity=".55"/>
+    <path d="M0 120 H56 V107 Z" fill="var(--a)" opacity=".55"/>
+    <path d="M8 60 L94 54.5 V65.5 Z" fill="var(--a)" opacity=".4"/>
+    <path d="M62 0h44l44 60-44 60H62l44-60z" fill="var(--a)"/><path d="M116 0h44l44 60-44 60h-44l44-60z" fill="var(--r)"/>
+  </g>
+  <g id="solo"><path d="M0 0h44l44 60-44 60H0l44-60z" fill="var(--a)"/><path d="M54 0h44l44 60-44 60H54l44-60z" fill="var(--r)"/></g>
+</defs></svg>
+<div class="top"><h1>Puntas con estela · ajuste</h1><p>Las estelas de arriba y abajo ahora siguen exacto el borde de la flecha; la del centro es más larga y fina y apunta al centro.</p></div>
+<div class="fila" style="--a:#2148A0;--r:#C8102E">
+  <div class="c"><div class="lab">ANTES</div>
+    <div class="lienzo"><svg width="170" height="100" viewBox="0 0 204 120"><use href="#viejo"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub">EL MÉTODO · INGLÉS</div></div></div></div>
+  <div class="c rec"><div class="lab">AHORA</div>
+    <div class="lienzo"><svg width="170" height="100" viewBox="0 0 204 120"><use href="#nuevo"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub">INGLÉS FÁCIL Y RÁPIDO</div></div></div></div>
+</div>
+<div class="abajo" style="--a:#2148A0;--r:#C8102E">
+  <div class="prueba">
+    <div><div class="ic" style="width:96px;height:96px"><svg width="72" height="42" viewBox="0 0 204 120"><use href="#nuevo"/></svg></div>96 px</div>
+    <div><div class="ic" style="width:64px;height:64px"><svg width="48" height="28" viewBox="0 0 204 120"><use href="#nuevo"/></svg></div>64 px</div>
+    <div><div class="ic" style="width:32px;height:32px"><svg width="22" height="19" viewBox="0 0 142 120"><use href="#solo"/></svg></div>32 px</div>
+    <div><div style="width:16px;height:16px;margin:0 auto 6px"><svg width="16" height="13" viewBox="0 0 142 120"><use href="#solo"/></svg></div>16 px</div>
+    <div style="margin-left:auto;text-align:left;font-size:14px;max-width:220px">En 32 px o menos (favicon, pestañas) se usan solo las flechas.</div>
+  </div>
+  <div class="osc" style="--a:#6C97E8;--r:#E8364A"><svg width="120" height="70" viewBox="0 0 204 120"><use href="#nuevo"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub" style="color:#FF8A9A">INGLÉS FÁCIL Y RÁPIDO</div></div></div>
+</div>
+</body></html>
