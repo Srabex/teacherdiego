@@ -17,6 +17,15 @@ Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago)
 - Le gusta el concepto de multinivel, pero quiere enfocarse en ser maestro de inglés (posible idea futura: maestros o embajadores que impartan o recomienden el método).
 - Oferta: una sola membresía (grabaciones, ejercicios en línea, manual y asesoría semanal); clases personalizadas con él aparte. Hoy tiene ~5 alumnos. Precio de la plataforma pendiente de cerrar con Sebas (Diego esperaba máx. $4,000); videos en Stream a costo real.
 
+## Modelo de venta que propone Diego (audio largo, 27 nov 2026) — CAMBIA el modelo de la plataforma, falta confirmar detalles
+- Embudo: TikTok/YouTube + tarjetas con QR → **landing que vende la plataforma** ("¿Quieres aprender inglés y no has podido?") → se registra y paga → acceso automático.
+- **3 niveles = 3 manuales**: Básico (12 temas), Intermedio (12), Avanzado (resto; ~35 temas en total). Cada tema = explicación breve + actividades + clase grabada. Avanzado incluye examen.
+- **Pago por nivel, $400**: incluye los 12 temas y 12 clases grabadas **para siempre** + **1 asesoría en vivo por semana durante un mes (4)**. Al terminar el mes pierde las asesorías (no los temas); puede pagar otro mes para volver a tener asesorías.
+- Diego da 3 asesorías en vivo por semana: una de básicos, una de intermedios y una de avanzados, agendadas. Quiere que queden grabadas y que cada alumno vea al menos las de su mes.
+- No quiere vender el manual solo (decepciona al que esperaba clases). Botón final "Quiero clases particulares" → WhatsApp.
+- Habla de alumnos de Perú y Colombia: revisar cobro internacional en Mercado Pago.
+- Implica: pago único por nivel (Checkout Pro) en vez de suscripción; tabla de compras por nivel; asesorías con horario y liga en vivo; grabaciones de asesorías en Stream con caducidad sugerida (~2 meses) para que el almacenamiento no crezca sin fin.
+
 ## Reglas de negocio
 - Membresías: `normal` y `vip`. VIP ve todo; Normal solo lo marcado "Normal y VIP". Módulos, videos y lecciones tienen `plan_min`; manda el más alto entre el módulo y el elemento.
 - Acceso (`accesoDe` en `worker/db.js`): cortesía siempre; si no, mientras `acceso_hasta` (pagado hasta) + `GRACIA_DIAS` (3) no haya pasado. Estados: cortesia, al_corriente, gracia, vencido, sin_pago, baja. Los admins (`ADMIN_EMAILS`) siempre entran como VIP.
