@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><style>
+@font-face{font-family:P;src:url(../public/s/fuentes/Poppins-Bold.woff);font-weight:700}
+@font-face{font-family:P;src:url(../public/s/fuentes/Poppins-Medium.woff);font-weight:500}
+html,body{margin:0;width:1600px;background:#F6F2EA;font-family:P;color:#13233F}
+.top{padding:40px 56px 0}h1{font-size:40px;margin:0}.top p{margin:6px 0 0;font-size:19px;color:#5E6677;font-weight:500}
+.fila{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:22px 56px 46px}
+.c{background:#fff;border-radius:24px;padding:20px 22px;box-shadow:0 8px 26px rgba(19,35,63,.07)}
+.lienzo{height:200px;display:flex;align-items:center;justify-content:center;gap:20px;border-radius:14px;background:#F6F2EA}
+.wm{font-weight:700;line-height:.95;font-size:40px;letter-spacing:-.4px}.sub{font-weight:500;letter-spacing:.28em;font-size:10px;color:#C8102E;margin-top:6px}
+.prueba{display:flex;align-items:flex-end;gap:16px;margin-top:14px;padding:12px;border:1px dashed #DCD3C1;border-radius:12px}
+.prueba>div{text-align:center;font-size:11px;color:#5E6677}
+.ic{display:grid;place-items:center;border-radius:22%;margin:0 auto 5px;background:#fff;border:1px solid #E5DED0}
+.osc{background:#13233F;border-radius:10px;padding:8px 10px;margin-left:auto}
+h2{font-size:23px;margin:14px 0 2px}.c p{margin:0;font-size:15px;color:#5E6677;line-height:1.45}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- 3 · Flechas con cola -->
+    <g id="cola"><rect x="0" y="54" width="70" height="12" rx="6" fill="currentColor" style="color:var(--a)"/><path d="M50 0h44l44 60-44 60H50l44-60z" fill="var(--a)"/><path d="M104 0h44l44 60-44 60h-44l44-60z" fill="var(--r)"/></g>
+    <!-- 4 · Escalera -->
+    <g id="esc"><rect x="8" y="22" width="56" height="10" rx="5" fill="var(--a)"/><rect x="22" y="55" width="44" height="10" rx="5" fill="var(--a)" opacity=".7"/><rect x="36" y="88" width="30" height="10" rx="5" fill="var(--a)" opacity=".45"/><path d="M60 0h44l44 60-44 60H60l44-60z" fill="var(--a)"/><path d="M114 0h44l44 60-44 60h-44l44-60z" fill="var(--r)"/></g>
+    <!-- 5 · Puntas que dejan estela -->
+    <g id="puntas"><path d="M0 9 L70 1 L79 13z" fill="var(--a)" opacity=".6"/><path d="M0 111 L70 119 L79 107z" fill="var(--a)" opacity=".6"/><path d="M22 60 L66 54 L66 66z" fill="var(--a)" opacity=".35"/><path d="M62 0h44l44 60-44 60H62l44-60z" fill="var(--a)"/><path d="M116 0h44l44 60-44 60h-44l44-60z" fill="var(--r)"/></g>
+    <g id="solo"><path d="M0 0h44l44 60-44 60H0l44-60z" fill="var(--a)"/><path d="M54 0h44l44 60-44 60H54l44-60z" fill="var(--r)"/></g>
+  </defs>
+</svg>
+<div class="top"><h1>Teacher Diego · 3 opciones más con líneas de velocidad</h1><p>Mismas flechas y colores. Debajo de cada una: ícono a 64, 32 y 16 px y versión sobre marino.</p></div>
+<div class="fila" style="--a:#2148A0;--r:#C8102E">
+
+<div class="c">
+<div class="lienzo"><svg width="150" height="94" viewBox="0 0 192 120"><use href="#cola"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub">EL MÉTODO · INGLÉS</div></div></div>
+<div class="prueba">
+  <div><div class="ic" style="width:64px;height:64px"><svg width="48" height="30" viewBox="0 0 192 120"><use href="#cola"/></svg></div>64</div>
+  <div><div class="ic" style="width:32px;height:32px"><svg width="24" height="15" viewBox="0 0 192 120"><use href="#cola"/></svg></div>32</div>
+  <div><div style="width:16px;height:16px;margin:0 auto 5px"><svg width="16" height="10" viewBox="0 0 192 120"><use href="#cola"/></svg></div>16</div>
+  <div class="osc" style="--a:#6C97E8;--r:#E8364A"><svg width="70" height="44" viewBox="0 0 192 120"><use href="#cola"/></svg></div>
+</div>
+<h2>3 · Flecha con cola</h2><p>Una sola línea gruesa entra al centro de las flechas, como el trazo de una flecha disparada. Al ser una sola y gruesa, se sigue viendo hasta en 16 px.</p></div>
+
+<div class="c">
+<div class="lienzo"><svg width="160" height="95" viewBox="0 0 202 120"><use href="#esc"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub">EL MÉTODO · INGLÉS</div></div></div>
+<div class="prueba">
+  <div><div class="ic" style="width:64px;height:64px"><svg width="48" height="28" viewBox="0 0 202 120"><use href="#esc"/></svg></div>64</div>
+  <div><div class="ic" style="width:32px;height:32px"><svg width="22" height="19" viewBox="0 0 142 120"><use href="#solo"/></svg></div>32</div>
+  <div><div style="width:16px;height:16px;margin:0 auto 5px"><svg width="16" height="13" viewBox="0 0 142 120"><use href="#solo"/></svg></div>16</div>
+  <div class="osc" style="--a:#6C97E8;--r:#E8364A"><svg width="74" height="44" viewBox="0 0 202 120"><use href="#esc"/></svg></div>
+</div>
+<h2>4 · Escalera</h2><p>Tres líneas que se van desvaneciendo de larga a corta: velocidad y también "niveles" del método. En 32 px o menos quedan solo las flechas.</p></div>
+
+<div class="c">
+<div class="lienzo"><svg width="164" height="96" viewBox="0 0 204 120"><use href="#puntas"/></svg><div><div class="wm">TEACHER<br>DIEGO</div><div class="sub">EL MÉTODO · INGLÉS</div></div></div>
+<div class="prueba">
+  <div><div class="ic" style="width:64px;height:64px"><svg width="50" height="29" viewBox="0 0 204 120"><use href="#puntas"/></svg></div>64</div>
+  <div><div class="ic" style="width:32px;height:32px"><svg width="22" height="19" viewBox="0 0 142 120"><use href="#solo"/></svg></div>32</div>
+  <div><div style="width:16px;height:16px;margin:0 auto 5px"><svg width="16" height="13" viewBox="0 0 142 120"><use href="#solo"/></svg></div>16</div>
+  <div class="osc" style="--a:#6C97E8;--r:#E8364A"><svg width="74" height="44" viewBox="0 0 204 120"><use href="#puntas"/></svg></div>
+</div>
+<h2>5 · Puntas con estela</h2><p>Las puntas de la flecha azul dejan una estela suave, la versión más cercana a tu logo actual pero en limpio. En 32 px o menos quedan solo las flechas.</p></div>
+
+</div></body></html>
