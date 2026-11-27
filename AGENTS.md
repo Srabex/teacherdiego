@@ -8,6 +8,15 @@ Objetivo: que se registren y paguen solos (suscripción mensual en Mercado Pago)
 - **Falta de Diego** (ya se le pidió): precios Normal y VIP, qué incluye cada una, lista y orden de los 36–40 videos (y su duración), ejemplos de sus documentos, si habrá clases en vivo, su correo (admin) y WhatsApp, dominio, fotos (solo hay 1: `public/s/img/diego-*.webp`), nombre completo y domicilio para el aviso de privacidad.
 - Textos de la landing ("Hi! I'm Diego", preguntas, beneficios VIP) son de borrador: Diego los revisa. VIP tiene puntos marcados "por definir".
 
+## Concepto de marca (lo que dijo Diego, 26–27 nov 2026)
+- La marca es **"el método Teacher Diego"**, no Diego en persona: sin fotos suyas en la página; alumnos de todas las edades y distintos maestros. Le gusta el nombre Teacher Diego.
+- **Eslogan elegido por Diego: "Fácil y rápido"** (el inglés es fácil y rápido). Las dos flechas significan eso: rápido, sencillo, dirigido.
+- Colores que le gustan y se respetan: azul, rojo y perla (los de su logo anterior "Aprende inglés"). Propuestas de logo en `diseno/logo-*.html` (flechas planas; favoritas de Sebas: con líneas de velocidad, opción 3 "flecha con cola"). Bocetos de personaje en `diseno/personaje-conceptos.html` (Manu, el manual, recomendado).
+- Historia: maestro de inglés desde hace **18 años**. Empezó a hacer TikTok por una tarea de la universidad y se volvió creador de contenido de inglés; quiere hacer muy bien YouTube y TikTok. La plataforma es para monetizar a la gente que llega por redes. Para él es el proyecto central, su siguiente paso.
+- **El manual**: lo hizo él (con su conocimiento y ayuda de IA) para venderlo; muy práctico y sencillo: explicación breve de cada tema + práctica. Mucha gente se lo pide.
+- Le gusta el concepto de multinivel, pero quiere enfocarse en ser maestro de inglés (posible idea futura: maestros o embajadores que impartan o recomienden el método).
+- Oferta: una sola membresía (grabaciones, ejercicios en línea, manual y asesoría semanal); clases personalizadas con él aparte. Hoy tiene ~5 alumnos. Precio de la plataforma pendiente de cerrar con Sebas (Diego esperaba máx. $4,000); videos en Stream a costo real.
+
 ## Reglas de negocio
 - Membresías: `normal` y `vip`. VIP ve todo; Normal solo lo marcado "Normal y VIP". Módulos, videos y lecciones tienen `plan_min`; manda el más alto entre el módulo y el elemento.
 - Acceso (`accesoDe` en `worker/db.js`): cortesía siempre; si no, mientras `acceso_hasta` (pagado hasta) + `GRACIA_DIAS` (3) no haya pasado. Estados: cortesia, al_corriente, gracia, vencido, sin_pago, baja. Los admins (`ADMIN_EMAILS`) siempre entran como VIP.
